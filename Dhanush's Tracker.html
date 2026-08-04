@@ -25,6 +25,14 @@
     --sky: #6FA8FF;     /* money */
     --rose: #FF6B8B;
     --accent: var(--amber);
+    /* theme-driven extras — every theme below overrides these */
+    --bg-2: #1A1624;          /* top of the page gradient */
+    --on-accent: #12101A;     /* text/icons drawn ON an accent fill */
+    --glass: rgba(18,16,26,0.82);  /* frosted tab bar */
+    --chart-a: #8CB8FF;       /* chart bar gradient top */
+    --chart-b: #5E86E8;       /* chart bar gradient bottom */
+    --plate-in: #8a6222;      /* inner hole of a loaded plate */
+    --scrim: rgba(0,0,0,0.55);
     --safe-t: env(safe-area-inset-top, 0px);
     --safe-b: env(safe-area-inset-bottom, 0px);
   }
@@ -36,7 +44,7 @@
   html,body{height:100%;}
   body{
     margin:0;
-    background: radial-gradient(120% 90% at 50% 0%, #1A1624 0%, var(--bg) 55%);
+    background: radial-gradient(120% 90% at 50% 0%, var(--bg-2) 0%, var(--bg) 55%);
     color: var(--ink);
     font-family: 'Inter', sans-serif;
     padding-top: calc(var(--safe-t) + 16px);
@@ -54,14 +62,14 @@
     font-family:'Oswald'; font-weight:700; font-size: 18px; letter-spacing: 0.05em;
     margin:0; text-transform: uppercase;
   }
-  .brand h1 span{ color: var(--accent); transition: color .25s; }
+  .brand h1 .hl{ color: var(--accent); transition: color .25s; }
   .today-date{ font-size: 12px; color: var(--ink-faint); font-family:'IBM Plex Mono', monospace; }
 
   /* ---------- Bottom tab bar ---------- */
   .tabbar{
     position: fixed; left:0; right:0; bottom:0; z-index:50;
     padding: 10px 18px calc(var(--safe-b) + 10px);
-    background: rgba(18,16,26,0.82);
+    background: var(--glass);
     -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
     border-top: 1px solid var(--line);
   }
@@ -121,7 +129,7 @@
   .plate{ width:18px; height:18px; border-radius:50%; background:var(--card-2); border:2px solid var(--line); position:relative; z-index:1; transition:.25s; flex-shrink:0; }
   .plate::after{ content:''; position:absolute; inset:5px; border-radius:50%; background:var(--bg); }
   .plate.filled{ background:var(--amber); border-color:var(--amber); transform:scale(1.08); }
-  .plate.filled::after{ background:#8a6222; }
+  .plate.filled::after{ background:var(--plate-in); }
   .plates .pct{ margin-left:auto; font-family:'IBM Plex Mono'; font-size:12px; color:var(--ink-faint); }
 
   .list{ display:flex; flex-direction:column; gap:8px; }
@@ -207,7 +215,7 @@
   .chart{ display:flex; gap:8px; align-items:flex-end; height:110px; margin-top:14px; }
   .cbar{ flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; height:100%; justify-content:flex-end; }
   .cbar .v{ font-family:'IBM Plex Mono'; font-size:9.5px; color:var(--ink-faint); white-space:nowrap; }
-  .cbar .bar{ width:100%; max-width:34px; border-radius:6px 6px 3px 3px; background:linear-gradient(180deg, #8CB8FF, #5E86E8); min-height:3px; transition:height .35s ease; }
+  .cbar .bar{ width:100%; max-width:34px; border-radius:6px 6px 3px 3px; background:linear-gradient(180deg, var(--chart-a), var(--chart-b)); min-height:3px; transition:height .35s ease; }
   .cbar.sel .bar{ background:linear-gradient(180deg, #FFD08A, var(--amber)); }
   .cbar .d{ font-size:10.5px; color:var(--ink-faint); font-weight:600; }
   .cbar.sel .d{ color:var(--ink); font-weight:700; }
@@ -227,7 +235,7 @@
   .cat-chip.sel{ color:#12101A; background: var(--cc); border-color: var(--cc); }
   .primary-btn{
     width:100%; border:none; border-radius:12px; padding:13px; font-size:15px; font-weight:700; cursor:pointer;
-    background: var(--sky); color:#12101A;
+    background: var(--sky); color:var(--on-accent);
   }
   .primary-btn:active{ transform:scale(0.98); }
 
@@ -253,7 +261,7 @@
 
   .dir-toggle{ display:flex; gap:5px; background:var(--card-2); border:1px solid var(--line); border-radius:13px; padding:4px; margin-bottom:10px; }
   .dir-toggle button{ flex:1; background:none; border:none; color:var(--ink-dim); font-size:13px; font-weight:600; padding:9px 6px; border-radius:9px; cursor:pointer; }
-  .dir-toggle button.sel{ background:var(--dc); color:#12101A; }
+  .dir-toggle button.sel{ background:var(--dc); color:var(--on-accent); }
 
   .settle-btn{ background:none; border:1px solid var(--mint); color:var(--mint); border-radius:16px; padding:5px 10px; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap; }
   .settle-btn.out{ border-color:var(--rose); color:var(--rose); }
@@ -266,14 +274,166 @@
   }
   .save-warn b{ color:var(--rose); display:block; margin-bottom:2px; }
 
+
+  /* ================= THEMES =================
+     Each theme only re-declares the palette variables.
+     No component CSS is duplicated — everything downstream
+     reads these vars, so a theme swap repaints the whole app.
+     "iron" is the default already set on :root.
+  ========================================== */
+  body[data-theme="darkblue"]{
+    --ink:#E8EFFA; --ink-dim:#9FB1C9; --ink-faint:#6B7C94;
+    --bg:#0B1120; --bg-2:#14203A; --card:#141E33; --card-2:#1C2A45; --line:#26364F;
+    --amber:#F2B33D; --mint:#45D6A8; --sky:#5B9CFF; --rose:#FF7089;
+    --on-accent:#08101F; --glass:rgba(11,17,32,0.84);
+    --chart-a:#8FC0FF; --chart-b:#4A7FE0; --plate-in:#8a6a20; --scrim:rgba(0,0,0,0.6);
+  }
+  body[data-theme="forest"]{
+    --ink:#EAF3EC; --ink-dim:#A2B5A8; --ink-faint:#6E8177;
+    --bg:#0D1512; --bg-2:#15251C; --card:#16211C; --card-2:#1E2D26; --line:#2A3B32;
+    --amber:#E0A53F; --mint:#4ADE80; --sky:#5EC7C0; --rose:#F2766B;
+    --on-accent:#0A1310; --glass:rgba(13,21,18,0.84);
+    --chart-a:#8FE0D8; --chart-b:#3E9E97; --plate-in:#836022; --scrim:rgba(0,0,0,0.55);
+  }
+  body[data-theme="purple"]{
+    --ink:#F0E9FF; --ink-dim:#B3A3D4; --ink-faint:#7A6BA0;
+    --bg:#0E0A18; --bg-2:#1D1136; --card:#1A1230; --card-2:#241844; --line:#33245C;
+    --amber:#FFB84D; --mint:#4DE8B0; --sky:#A87BFF; --rose:#FF5FA8;
+    --on-accent:#100A1C; --glass:rgba(14,10,24,0.84);
+    --chart-a:#C9A6FF; --chart-b:#7B4DD8; --plate-in:#8a6425; --scrim:rgba(0,0,0,0.6);
+  }
+  body[data-theme="amoled"]{
+    --ink:#FFFFFF; --ink-dim:#A0A0A8; --ink-faint:#6A6A72;
+    --bg:#000000; --bg-2:#000000; --card:#0B0B0D; --card-2:#141417; --line:#232327;
+    --amber:#FFB020; --mint:#32E88F; --sky:#4DA6FF; --rose:#FF5C7A;
+    --on-accent:#000000; --glass:rgba(0,0,0,0.9);
+    --chart-a:#8CC8FF; --chart-b:#3D7FD6; --plate-in:#7d5610; --scrim:rgba(0,0,0,0.7);
+  }
+  body[data-theme="light"]{
+    --ink:#1E1B26; --ink-dim:#5C5866; --ink-faint:#8A8694;
+    --bg:#F4F3F0; --bg-2:#FFFFFF; --card:#FFFFFF; --card-2:#EFEDE9; --line:#DDDAD4;
+    --amber:#B4741A; --mint:#0E8F55; --sky:#2563C9; --rose:#C42B52;
+    --on-accent:#FFFFFF; --glass:rgba(244,243,240,0.86);
+    --chart-a:#6FA0EA; --chart-b:#2563C9; --plate-in:#F4F3F0; --scrim:rgba(20,18,26,0.4);
+  }
+  body[data-theme="coffee"]{
+    --ink:#F3E9DC; --ink-dim:#BCA994; --ink-faint:#8A7561;
+    --bg:#17110D; --bg-2:#2A1E15; --card:#201811; --card-2:#2C2118; --line:#3B2C20;
+    --amber:#E0A45C; --mint:#A3C46B; --sky:#7FB3B3; --rose:#D9705C;
+    --on-accent:#17110D; --glass:rgba(23,17,13,0.85);
+    --chart-a:#B8D9D9; --chart-b:#5E8E8E; --plate-in:#8a6338; --scrim:rgba(0,0,0,0.58);
+  }
+  /* Light mode needs a touch more separation between page and cards */
+  body[data-theme="light"] .item,
+  body[data-theme="light"] .hab-card,
+  body[data-theme="light"] .exp-row,
+  body[data-theme="light"] .money-hero,
+  body[data-theme="light"] .quick-add,
+  body[data-theme="light"] .hab-top,
+  body[data-theme="light"] .owe-card,
+  body[data-theme="light"] .sheet{ box-shadow: 0 1px 2px rgba(20,18,26,.06); }
+  body[data-theme="light"] .plate::after{ background:var(--card); }
+
+  /* ================= SETTINGS MODAL ================= */
+  .gear-btn{
+    background:var(--card); border:1px solid var(--line); color:var(--ink-dim);
+    width:34px; height:34px; border-radius:11px; font-size:15px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .gear-btn:active{ transform:scale(.94); }
+  .brand-right{ display:flex; align-items:center; gap:10px; }
+
+  .modal{
+    position:fixed; inset:0; z-index:100; display:none;
+    align-items:flex-end; justify-content:center;
+  }
+  .modal.open{ display:flex; }
+  .scrim{
+    position:absolute; inset:0; background:var(--scrim);
+    -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
+    opacity:0; transition:opacity .25s ease;
+  }
+  .modal.in .scrim{ opacity:1; }
+  .sheet{
+    position:relative; width:100%; max-width:480px; max-height:88vh; overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    background:var(--card); border:1px solid var(--line); border-bottom:none;
+    border-radius:22px 22px 0 0; padding:8px 18px calc(var(--safe-b) + 26px);
+    transform:translateY(100%); transition:transform .3s cubic-bezier(.2,.8,.25,1);
+  }
+  .modal.in .sheet{ transform:translateY(0); }
+  .grabber{ width:38px; height:4px; border-radius:2px; background:var(--line); margin:8px auto 14px; }
+  .sheet-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .sheet-head h3{ font-family:'Oswald'; font-size:20px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; margin:0; }
+  .set-sec{ margin-top:20px; }
+  .set-sec > .lbl{
+    font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint);
+    font-weight:700; margin-bottom:8px;
+  }
+  .field{ margin-bottom:10px; }
+  .field label{ display:block; font-size:12px; color:var(--ink-dim); margin-bottom:5px; font-weight:600; }
+  .field input, .field select{
+    width:100%; background:var(--card-2); border:1px solid var(--line); color:var(--ink);
+    border-radius:11px; padding:11px 12px; font-family:'Inter'; -webkit-appearance:none; appearance:none;
+  }
+  .field select{
+    background-image:linear-gradient(45deg,transparent 50%,var(--ink-dim) 50%),linear-gradient(135deg,var(--ink-dim) 50%,transparent 50%);
+    background-position:calc(100% - 18px) 52%, calc(100% - 13px) 52%;
+    background-size:5px 5px, 5px 5px; background-repeat:no-repeat; padding-right:36px;
+  }
+  .field input:focus, .field select:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+  .field input[type="date"]{ min-height:44px; }
+  .two-col{ display:flex; gap:10px; }
+  .two-col .field{ flex:1; min-width:0; }
+  .exp-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px; }
+  .exp-btn{
+    background:var(--card-2); border:1px solid var(--line); color:var(--ink);
+    border-radius:12px; padding:12px 8px; font-size:13.5px; font-weight:600; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .exp-btn:active{ transform:scale(.98); }
+  .exp-btn[disabled]{ opacity:.55; }
+  .exp-btn.all{ background:var(--accent); color:var(--on-accent); border-color:var(--accent); }
+  .about-row{ display:flex; justify-content:space-between; font-size:12.5px; color:var(--ink-dim); padding:6px 0; border-bottom:1px solid var(--line); }
+  .about-row:last-child{ border-bottom:none; }
+  .about-row b{ color:var(--ink); font-family:'IBM Plex Mono'; font-weight:600; }
+  .hint{ font-size:11.5px; color:var(--ink-faint); line-height:1.5; margin-top:8px; }
+
+  /* ================= TOASTS ================= */
+  .toast-wrap{
+    position:fixed; left:0; right:0; bottom:calc(var(--safe-b) + 84px); z-index:200;
+    display:flex; flex-direction:column; align-items:center; gap:8px; pointer-events:none; padding:0 18px;
+  }
+  .toast{
+    background:var(--card); border:1px solid var(--line); color:var(--ink);
+    border-left:4px solid var(--accent); border-radius:12px; padding:11px 14px;
+    font-size:13px; font-weight:600; max-width:420px; width:100%;
+    box-shadow:0 8px 24px rgba(0,0,0,.35);
+    opacity:0; transform:translateY(10px); transition:opacity .25s ease, transform .25s ease;
+  }
+  .toast.in{ opacity:1; transform:translateY(0); }
+  .toast.ok{ border-left-color:var(--mint); }
+  .toast.err{ border-left-color:var(--rose); }
+  .toast.info{ border-left-color:var(--sky); }
+
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 </head>
-<body data-tab="gym">
+<body data-tab="gym" data-theme="iron">
+<script>
+  /* Applied synchronously so the themed palette is live on first paint. */
+  try{
+    var _t = localStorage.getItem('ironlog:theme-v1');
+    if(_t){ document.body.setAttribute('data-theme', JSON.parse(_t)); }
+  }catch(e){}
+</script>
 <div class="wrap">
   <div class="brand">
-    <h1>Dhanush’s <span>Tracker</span></h1>
-    <div class="today-date" id="todayDate"></div>
+    <h1><span id="ownerLabel">Dhanush’s</span> <span class="hl">Tracker</span></h1>
+    <div class="brand-right">
+      <div class="today-date" id="todayDate"></div>
+      <button class="gear-btn" id="settingsBtn" aria-label="Settings">⚙︎</button>
+    </div>
   </div>
 
   <!-- ================= GYM ================= -->
@@ -357,6 +517,72 @@
   </div>
 </nav>
 
+<!-- ================= SETTINGS MODAL ================= -->
+<div class="modal" id="settingsModal" role="dialog" aria-modal="true" aria-label="Settings">
+  <div class="scrim" id="settingsScrim"></div>
+  <div class="sheet">
+    <div class="grabber"></div>
+    <div class="sheet-head">
+      <h3>Settings</h3>
+      <button class="ghost-btn" id="closeSettings">Done</button>
+    </div>
+
+    <!-- Profile -->
+    <div class="set-sec">
+      <div class="lbl">Profile</div>
+      <div class="field">
+        <label for="nameInput">Your name</label>
+        <input id="nameInput" type="text" maxlength="24" placeholder="Dhanush" autocomplete="off">
+      </div>
+      <div class="hint">Used for the app title and in exported file names.</div>
+    </div>
+
+    <!-- Appearance -->
+    <div class="set-sec">
+      <div class="lbl">Appearance</div>
+      <div class="field">
+        <label for="themeSelect">Theme</label>
+        <select id="themeSelect">
+          <option value="iron">Iron (default)</option>
+          <option value="darkblue">Dark Blue</option>
+          <option value="forest">Forest</option>
+          <option value="purple">Purple Neon</option>
+          <option value="amoled">AMOLED Black</option>
+          <option value="light">Light Mode</option>
+          <option value="coffee">Coffee</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Data -->
+    <div class="set-sec">
+      <div class="lbl">Data &amp; Export</div>
+      <div class="two-col">
+        <div class="field"><label for="expFrom">Date from</label><input id="expFrom" type="date"></div>
+        <div class="field"><label for="expTo">Date to</label><input id="expTo" type="date"></div>
+      </div>
+      <div class="exp-grid">
+        <button class="exp-btn" data-export="gym">\U0001F3CB\uFE0F Gym</button>
+        <button class="exp-btn" data-export="habits">\U0001F331 Habits</button>
+        <button class="exp-btn" data-export="money">\U0001F4B8 Money</button>
+        <button class="exp-btn all" data-export="all">\U0001F4E6 Export All</button>
+      </div>
+      <div class="hint">Exports as an Excel (.xlsx) file. The first export needs internet to fetch the spreadsheet library; after that it works offline. On iPhone the share sheet opens \u2014 choose <b>Save to Files</b>.</div>
+    </div>
+
+    <!-- About -->
+    <div class="set-sec">
+      <div class="lbl">About</div>
+      <div class="about-row"><span>Version</span><b id="aboutVersion">\u2014</b></div>
+      <div class="about-row"><span>Storage used</span><b id="aboutStorage">\u2014</b></div>
+      <div class="about-row"><span>Saving to</span><b id="aboutMode">\u2014</b></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+
 <script>
 (function(){
   'use strict';
@@ -435,7 +661,23 @@
       return false;
     }
 
-    return { init:init, get:get, set:set, mode:function(){ return backend; } };
+    // approximate footprint of everything this app has stored
+    function usage(){
+      var bytes=0, keys=0, k, i;
+      try{
+        if(backend==='local'){
+          for(i=0;i<window.localStorage.length;i++){
+            k=window.localStorage.key(i);
+            if(k && k.indexOf(PREFIX)===0){ keys++; bytes += k.length + (window.localStorage.getItem(k)||'').length; }
+          }
+        } else {
+          for(k in mem){ if(Object.prototype.hasOwnProperty.call(mem,k)){ keys++; bytes += k.length + mem[k].length; } }
+        }
+      }catch(e){}
+      return { bytes:bytes, keys:keys };
+    }
+
+    return { init:init, get:get, set:set, usage:usage, mode:function(){ return backend; } };
   })();
 
   const sGet = Store.get;
@@ -573,7 +815,7 @@
         const on=c.includes(it.id), dis=!live;
         return `<div class="item ${it.type==='aux'?'aux':''} ${on?'done':''}">
           <button class="check ${on?'checked':''} ${dis?'disabled':''}" data-id="${it.id}" ${dis?'disabled':''} aria-label="Mark ${esc(it.name)} complete">
-            <svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.2 12L13 4" stroke="#12101A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.2 12L13 4" stroke="var(--on-accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="item-main"><div class="item-name">${esc(it.name)}</div><div class="item-detail">${esc(it.detail)}</div></div>
         </div>`;
@@ -1039,6 +1281,304 @@
     document.getElementById('addExpBtn').textContent = isToday(moneyDate)? 'Add expense' : 'Add to '+niceDay(moneyDate);
   }
 
+
+  /* =====================================================
+     SETTINGS: profile, themes, toasts, Excel export
+     Storage keys added here: profile-v1, theme-v1
+     (existing keys are untouched)
+  ===================================================== */
+  const APP_VERSION = '1.3.0';
+  const XLSX_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  const THEME_NAMES = { iron:'Iron', darkblue:'Dark Blue', forest:'Forest', purple:'Purple Neon',
+                        amoled:'AMOLED Black', light:'Light Mode', coffee:'Coffee' };
+  const THEME_META = { iron:'#12101A', darkblue:'#0B1120', forest:'#0D1512', purple:'#0E0A18',
+                       amoled:'#000000', light:'#F4F3F0', coffee:'#17110D' };
+
+  let profile = { name:'Dhanush' };
+  let themeSel = 'iron';
+
+  /* ---------- toasts ---------- */
+  function toast(msg, kind){
+    const wrap=document.getElementById('toastWrap');
+    const t=document.createElement('div');
+    t.className='toast '+(kind||'ok');
+    t.textContent=msg;
+    wrap.appendChild(t);
+    requestAnimationFrame(()=>t.classList.add('in'));
+    setTimeout(()=>{
+      t.classList.remove('in');
+      setTimeout(()=>{ if(t.parentNode) t.parentNode.removeChild(t); }, 300);
+    }, kind==='err' ? 4200 : 2400);
+  }
+
+  /* ---------- profile name ---------- */
+  function possessive(n){
+    n=(n||'').trim();
+    if(!n) n='Dhanush';
+    return /s$/i.test(n) ? n+'\u2019' : n+'\u2019s';
+  }
+  function firstWord(n){
+    const w=(n||'Dhanush').trim().split(/\s+/)[0];
+    return w.replace(/[^A-Za-z0-9_-]/g,'') || 'Tracker';
+  }
+  function applyName(){
+    const p=possessive(profile.name);
+    document.getElementById('ownerLabel').textContent = p;
+    document.title = p + ' Tracker';
+    const meta=document.querySelector('meta[name="apple-mobile-web-app-title"]');
+    if(meta) meta.setAttribute('content', p + ' Tracker');
+  }
+
+  /* ---------- themes ---------- */
+  function applyTheme(id, announce){
+    if(!THEME_NAMES[id]) id='iron';
+    themeSel=id;
+    document.body.setAttribute('data-theme', id);
+    const meta=document.querySelector('meta[name="theme-color"]');
+    if(meta) meta.setAttribute('content', THEME_META[id]);
+    const sel=document.getElementById('themeSelect');
+    if(sel && sel.value!==id) sel.value=id;
+    if(announce) toast('Theme changed to '+THEME_NAMES[id], 'info');
+  }
+
+  /* ---------- settings modal ---------- */
+  const modalEl=document.getElementById('settingsModal');
+  function fmtBytes(b){
+    if(b<1024) return b+' B';
+    if(b<1024*1024) return (b/1024).toFixed(1)+' KB';
+    return (b/1048576).toFixed(2)+' MB';
+  }
+  function refreshAbout(){
+    const u=Store.usage();
+    document.getElementById('aboutVersion').textContent='v'+APP_VERSION;
+    document.getElementById('aboutStorage').textContent=fmtBytes(u.bytes)+' \u00B7 '+u.keys+' keys';
+    const m=Store.mode();
+    document.getElementById('aboutMode').textContent =
+      m==='local' ? 'This device' : (m==='bridge' ? 'Host app' : 'Not saving');
+  }
+  function openSettings(){
+    document.getElementById('nameInput').value=profile.name;
+    document.getElementById('themeSelect').value=themeSel;
+    refreshAbout();
+    modalEl.classList.add('open');
+    requestAnimationFrame(()=>modalEl.classList.add('in'));
+  }
+  function closeSettings(){
+    modalEl.classList.remove('in');
+    setTimeout(()=>modalEl.classList.remove('open'), 280);
+  }
+  document.getElementById('settingsBtn').addEventListener('click', openSettings);
+  document.getElementById('closeSettings').addEventListener('click', closeSettings);
+  document.getElementById('settingsScrim').addEventListener('click', closeSettings);
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && modalEl.classList.contains('open')) closeSettings(); });
+
+  document.getElementById('nameInput').addEventListener('change', async e=>{
+    const v=e.target.value.trim();
+    profile.name = v || 'Dhanush';
+    e.target.value = profile.name;
+    applyName();
+    await sSet('profile-v1', profile);
+    toast('Saved', 'ok');
+  });
+  document.getElementById('themeSelect').addEventListener('change', async e=>{
+    applyTheme(e.target.value, true);
+    await sSet('theme-v1', themeSel);
+  });
+
+  /* ---------- SheetJS, loaded only when an export is asked for ---------- */
+  let xlsxPromise=null;
+  function loadXLSX(){
+    if(window.XLSX) return Promise.resolve(window.XLSX);
+    if(!xlsxPromise){
+      xlsxPromise=new Promise((resolve,reject)=>{
+        const s=document.createElement('script');
+        s.src=XLSX_CDN;
+        s.onload=()=>window.XLSX ? resolve(window.XLSX) : reject(new Error('library did not load'));
+        s.onerror=()=>{ xlsxPromise=null; reject(new Error('no connection')); };
+        document.head.appendChild(s);
+      });
+    }
+    return xlsxPromise;
+  }
+
+  /* ---------- export helpers ---------- */
+  function sheetFrom(rows, widths){
+    const ws=window.XLSX.utils.aoa_to_sheet(rows);
+    if(widths) ws['!cols']=widths.map(w=>({wch:w}));
+    ws['!freeze']={xSplit:'0', ySplit:'1'};
+    return ws;
+  }
+  function eachDay(from, to, fn){
+    const out=[];
+    for(let d=new Date(from); d<=to; d=addDays(d,1)) out.push(fn(new Date(d)));
+    return out;
+  }
+  function rangeFromInputs(){
+    const f=document.getElementById('expFrom').value;
+    const t=document.getElementById('expTo').value;
+    if(!f || !t){ toast('Pick both dates first', 'err'); return null; }
+    const from=dateFromStr(f), to=dateFromStr(t);
+    if(from>to){ toast('"Date from" is after "Date to"', 'err'); return null; }
+    const days=Math.round((to-from)/86400000)+1;
+    if(days>1830){ toast('Range too long \u2014 keep it under 5 years', 'err'); return null; }
+    return { from:from, to:to, fromStr:f, toStr:t };
+  }
+
+  /* Gym: one row per exercise per day in range, with its tick state */
+  async function collectGym(from,to){
+    const rows=[['Date','Workout Day','Exercise','Sets/Reps','Completed']];
+    const weekCache={};
+    for(let d=new Date(from); d<=to; d=addDays(d,1)){
+      const ds=fmtDate(d), wk=fmtDate(getMonday(d));
+      if(!(wk in weekCache)) weekCache[wk] = (wk===weekStartStr) ? weekObj : await sGet('week:'+wk, {});
+      const checked=weekCache[wk][ds]||[];
+      const dk=dayKeyForDate(d), day=plan[dk];
+      if(!day || !day.items.length){ rows.push([ds, day?day.title:'Rest', '\u2014', '\u2014', '\u2014']); continue; }
+      day.items.forEach(it=>{
+        rows.push([ds, day.title, it.name, it.detail, checked.indexOf(it.id)>-1 ? 'Yes' : 'No']);
+      });
+    }
+    return rows;
+  }
+
+  /* Habits: one row per habit per day, plus the streak standing on that date */
+  async function ensureHabMonth(mk){
+    if(!(mk in habLogs)) habLogs[mk] = await sGet('habitlog:'+mk, {});
+    return habLogs[mk];
+  }
+  async function doneOnAsync(ds, id){
+    const log=await ensureHabMonth(ds.slice(0,7));
+    return (log[ds]||[]).indexOf(id)>-1;
+  }
+  async function streakAsOf(id, d){
+    let s=0, cur=new Date(d);
+    for(let i=0;i<400;i++){
+      if(await doneOnAsync(fmtDate(cur), id)){ s++; cur=addDays(cur,-1); } else break;
+    }
+    return s;
+  }
+  async function collectHabits(from,to){
+    const rows=[['Date','Habit','Completed','Current Streak']];
+    for(let d=new Date(from); d<=to; d=addDays(d,1)){
+      const ds=fmtDate(d);
+      for(let j=0;j<habits.length;j++){
+        const h=habits[j];
+        const done=await doneOnAsync(ds, h.id);
+        rows.push([ds, h.name, done?'Yes':'No', done ? await streakAsOf(h.id, d) : 0]);
+      }
+    }
+    return rows;
+  }
+
+  /* Money: expenses in range, and the debts dated inside it */
+  async function collectExpenses(from,to){
+    const rows=[['Date','Category','Description','Amount']];
+    const fromStr=fmtDate(from), toStr=fmtDate(to);
+    const months={}, cur=new Date(from.getFullYear(), from.getMonth(), 1);
+    while(cur<=to){ months[monthKeyOf(cur)]=1; cur.setMonth(cur.getMonth()+1); }
+    let all=[];
+    for(const mk in months){
+      if(!(mk in expCache)) expCache[mk]=await sGet('expenses:'+mk, []);
+      all=all.concat(expCache[mk]||[]);
+    }
+    all.filter(e=>e.date>=fromStr && e.date<=toStr)
+       .sort((a,b)=> a.date===b.date ? a.ts-b.ts : (a.date<b.date?-1:1))
+       .forEach(e=>{
+         const c=catOf(e.cat);
+         rows.push([e.date, c.name, e.desc||'', e.amt]);
+       });
+    return rows;
+  }
+  function collectOwed(from,to){
+    const rows=[['Person','Direction','Amount','Date','Settled']];
+    const fromStr=fmtDate(from), toStr=fmtDate(to);
+    (ious||[]).filter(i=>i.date>=fromStr && i.date<=toStr)
+      .sort((a,b)=> a.date<b.date?-1:1)
+      .forEach(i=>{
+        rows.push([i.person, i.dir==='out' ? 'I owe them' : 'They owe me', i.amt, i.date, i.settled?'Yes':'No']);
+      });
+    return rows;
+  }
+
+  /* Hand the file to the user. iOS standalone apps can't do a plain download,
+     so prefer the share sheet and fall back to an anchor on desktop. */
+  async function saveWorkbook(wb, filename){
+    const out=window.XLSX.write(wb,{bookType:'xlsx', type:'array'});
+    const blob=new Blob([out],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    try{
+      if(navigator.canShare && typeof File==='function'){
+        const file=new File([blob], filename, {type:blob.type});
+        if(navigator.canShare({files:[file]})){
+          await navigator.share({files:[file], title:filename});
+          return 'shared';
+        }
+      }
+    }catch(err){
+      if(err && err.name==='AbortError') return 'cancelled';
+    }
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 5000);
+    return 'downloaded';
+  }
+
+  async function runExport(kind){
+    const r=rangeFromInputs();
+    if(!r) return;
+    const btns=document.querySelectorAll('.exp-btn');
+    btns.forEach(b=>b.disabled=true);
+    try{
+      toast('Building your file\u2026', 'info');
+      await loadXLSX();
+      const XLSX=window.XLSX;
+      const wb=XLSX.utils.book_new();
+      const who=firstWord(profile.name);
+      let label='All_Data';
+
+      if(kind==='gym' || kind==='all'){
+        XLSX.utils.book_append_sheet(wb, sheetFrom(await collectGym(r.from,r.to), [12,16,34,14,11]), 'Gym');
+        if(kind==='gym') label='Gym';
+      }
+      if(kind==='habits' || kind==='all'){
+        XLSX.utils.book_append_sheet(wb, sheetFrom(await collectHabits(r.from,r.to), [12,32,12,14]), 'Habits');
+        if(kind==='habits') label='Habits';
+      }
+      if(kind==='money' || kind==='all'){
+        XLSX.utils.book_append_sheet(wb, sheetFrom(await collectExpenses(r.from,r.to), [12,14,32,12]), 'Expenses');
+        XLSX.utils.book_append_sheet(wb, sheetFrom(collectOwed(r.from,r.to), [20,14,12,12,10]), 'Money Owed');
+        if(kind==='money') label='Money';
+      }
+
+      const filename=who+'_'+label+'_'+r.fromStr+'_to_'+r.toStr+'.xlsx';
+      const how=await saveWorkbook(wb, filename);
+      if(how==='cancelled') toast('Export cancelled', 'info');
+      else if(how==='shared') toast('Export ready \u2014 choose Save to Files', 'ok');
+      else toast('Export complete: '+filename, 'ok');
+    }catch(err){
+      console.error(err);
+      const msg=(err && err.message==='no connection')
+        ? 'Export needs internet the first time. Connect and try again.'
+        : 'Export failed. Please try again.';
+      toast(msg, 'err');
+    }finally{
+      btns.forEach(b=>b.disabled=false);
+    }
+  }
+  document.querySelectorAll('.exp-btn').forEach(b=>{
+    b.addEventListener('click', ()=>runExport(b.dataset.export));
+  });
+
+  /* default range: start of this month \u2192 today */
+  function seedExportDates(){
+    const first=new Date(today.getFullYear(), today.getMonth(), 1);
+    document.getElementById('expFrom').value=fmtDate(first);
+    document.getElementById('expTo').value=todayStr;
+    document.getElementById('expTo').max=todayStr;
+    document.getElementById('expFrom').max=todayStr;
+  }
+
   /* ============ init ============ */
   (async function init(){
     const mode = await Store.init();
@@ -1057,7 +1597,9 @@
       sGet('habits-v1', null),
       sGet('ious-v1', []),
       loadExpMonth(monthKeyOf(today)),
-      loadHabMonth(monthKeyOf(today))
+      loadHabMonth(monthKeyOf(today)),
+      sGet('profile-v1', null),
+      sGet('theme-v1', null)
     ]);
 
     plan = results[0];
@@ -1066,6 +1608,12 @@
     habits = results[2];
     if(!habits){ habits=JSON.parse(JSON.stringify(DEFAULT_HABITS)); sSet('habits-v1',habits); }
     ious = results[3];
+    // profile + theme (both default silently if never set)
+    profile = results[6] || { name:'Dhanush' };
+    if(!profile.name) profile.name='Dhanush';
+    applyName();
+    applyTheme(results[7] || 'iron', false);
+    seedExportDates();
     // records saved before the "I owe" feature existed were all money owed TO you
     let migrated=false;
     ious.forEach(function(i){ if(!i.dir){ i.dir='in'; migrated=true; } });
